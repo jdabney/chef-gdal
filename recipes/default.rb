@@ -3,24 +3,23 @@ gdal_folder = node['gdal']['folder_version'] || gdal_version
 
 tarball = "gdal-#{gdal_version}.tar"
 tarball_gz = "gdal-#{gdal_version}.tar.gz"
-gdal_url = node['gdal']['download_url'] || "http://download.osgeo.org/gdal/#{tarball_gz}"
+gdal_url = node['gdal']['download_url'] || "http://download.osgeo.org/gdal/#{gdal_version}/#{tarball_gz}"
 
-remote_file "/tmp/#{tarball_gz}" do
+remote_file "#{Chef::Config[:file_cache_path]}/#{tarball_gz}" do
   source gdal_url
   mode "0644"
   action :create_if_missing
 end
 
 bash "install_gdal_#{gdal_version}" do
-  untar_dir = "/usr/local/src"
+  cwd cwd Chef::Config[:file_cache_path]
   user "root"
-  code <<-EOH
-    cd #{untar_dir} && \
-    tar xzvf /tmp/#{tarball_gz} && \
-    cd gdal-#{gdal_folder} && \
-    ./configure && make && make install && \
+  code <<-EOF
+    tar xzvf #{tarball_gz}
+    cd gdal-#{gdal_folder}
+    ./configure && make && make install
     ldconfig
-  EOH
+  EOF
   command ""
   creates "/usr/local/bin/gdal-config"
   action :run
