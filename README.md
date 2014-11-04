@@ -7,6 +7,7 @@ Installs the [Geospatial Data Abstraction Library (GDAL)](http://www.gdal.org/).
 Tested on:
 
 * Ubuntu 12.04
+* CentOS 6.5
 
 ## Recipes:
 
